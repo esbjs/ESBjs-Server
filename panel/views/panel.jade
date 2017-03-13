@@ -1,0 +1,112 @@
+extends layout
+block content
+    h2= title
+    p Área restrita da Administração
+
+    .row
+        .col-sm-3
+            button.btn.btn-primary(type='button',onclick="CarregarClima();") Atualizar
+            table#tbl_clima(border=1, width = '100%')
+                thead
+                    tr
+                        th Registros climáticos
+                        th Total
+                tbody
+            br
+            br
+            table#tbl_prev(border=1, width = '100%')
+                thead
+                    tr
+                        th Previsões
+                        th Total
+                tbody
+        .col-sm-6
+            button.btn.btn-primary(type='button',onclick="CarregarTarefas();") Atualizar/Carregar
+            table#tbl_diapy(border=1, width = '100%')
+                thead
+                    tr
+                        th Tarefas Agendadas
+                        th Sucesso
+                        th Erro
+                        th Progresso
+                        th Total
+                tbody
+        .col-sm-3
+            button.btn.btn-primary(type='button',onclick="CarregarLogs();") Atualizar/Carregar
+            table#tbl_bus(border=1, width = '100%')
+                thead
+                    tr
+                        th Registros Log
+                        th Total
+                tbody
+
+
+    script(src='/public/javascripts/webservice.js')
+    script(src='/public/javascripts/sbdb.js')
+    script(src='/public/javascripts/utilitario.js')
+    script.
+        var IP = 'wellington.ddns.net';
+        //var IP = '127.0.0.1';
+        function PreencherDiv(table, name, driver) {
+            $("#" + table).find('tbody').append("<tr><td>"+ name +"</td><td><div id=\"div_"+ name +"\"></div></td>></tr>");
+            Count(name, {}, driver, "home", IP, {'table': table, 'name' : name}, Retorno);
+        }
+        function PreencherDivTarefas(table, name, driver) {
+            $("#" + table).find('tbody').append("<tr><td>"+ name +"</td><td><div id=\"div_su_"+ name +"\"></div></td><td><div id=\"div_er_"+ name +"\"></div></td><td><div id=\"div_prog_"+ name +"\"></div></td><td><div id=\"div_"+ name +"\"></div></td>></tr>");
+            Count(name, {"status.status" : "sucesso"},     driver, "home", IP, {'table': table, 'name' : name, 'div' : "div_su_" + name}, Retorno);
+            Count(name, {"status.status" : "erro"},        driver, "home", IP, {'table': table, 'name' : name, 'div' : "div_er_" + name}, Retorno);
+            Count(name, {"status.status" : "processando"}, driver, "home", IP, {'table': table, 'name' : name, 'div' : "div_prog_" + name}, Retorno);
+            Count(name, {},                                driver, "home", IP, {'table': table, 'name' : name, 'div' : "div_" + name}, Retorno);
+
+        }
+
+        function Retorno(dados, param) {
+            if(param.div == undefined) {
+                $("#div_" + param.name).append(dados.count);
+            }else{
+                $("#" + param.div).append(dados.count);
+            }
+
+        }
+
+        function CarregarClima() {
+            $("#tbl_clima > tbody").html("");
+            $("#tbl_prev > tbody").html("");
+            // clima
+            PreencherDiv("tbl_clima", "climas", "clima");
+            var data = new Date();
+            for (var i = 0; i < 5; i++) {
+                PreencherDiv("tbl_clima", "dadosclima_" + DataFormatada(data, "YYYYMMDD"), "clima");
+                data.setDate(data.getDate() - 1);
+            }
+
+            // CLIMA
+            data = new Date();
+            for(var i = 0; i < 5; i++) {
+                PreencherDiv("tbl_prev", "dadosprev_" + DataFormatada(data, "YYYYMMDD"), "clima");
+                data.setDate(data.getDate() - 1);
+            }
+        }
+        CarregarClima();
+        function CarregarTarefas(){
+            $("#tbl_diapy > tbody").html("");
+            // diapy
+            var data = new Date();
+            data.setHours(0);
+            PreencherDivTarefas("tbl_diapy", "tasks_" + DataFormatada(data, "YYYYMMDD"), 'task');
+            for(var i = 0; i < 24; i++) {
+                PreencherDivTarefas("tbl_diapy", "tasks_" + DataFormatada(data, "YYYYMMDDHH"), 'task');
+                data.setHours(data.getHours() + 1);
+            }
+        }
+
+        function CarregarLogs() {
+            $("#tbl_bus > tbody").html("");
+            // BUS
+            var data = new Date();
+            data.setHours(0);
+            for (var i = 0; i < 24; i++) {
+                PreencherDiv("tbl_bus", "log_" + DataFormatada(data, "YYYYMMDDHH"), 'bus');
+                data.setHours(data.getHours() + 1);
+            }
+        }

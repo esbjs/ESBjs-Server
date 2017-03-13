@@ -1,0 +1,12 @@
+extends layout
+block content
+    h2= title
+    p Área restrita da Administração
+
+    script(src='/public/javascripts/webservice.js')
+    script(src='/public/bot/app.js')
+    script.
+        //EnviarGet('http://www.climatempo.com.br/previsao-do-tempo/cidade/450/guarulhos-sp', Retorno, {});
+        //function Retorno(path, data, parametros){
+        //    alert(data);
+        //}

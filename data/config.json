@@ -1,0 +1,15 @@
+{
+  "server" : {"name" : "home", "type" : "servicebus", "ip" : "127.0.0.1", "port" : 5008},
+  "others" : [{"name" : "home", "type" : "servicebus", "ip" : "192.168.1.170", "port" : 5007},
+              {"name" : "home", "type" : "servicebus", "ip" : "192.168.1.171", "port" : 5007}],
+  "balance" : {"port" : 5007},
+  "tokens" : [{"id" : "0c33cc7a-69bc-4c79-adfe", "drivers" : [{"name" : "clima", "operations" : ["select", "count"]}, {"name" : "bus", "operations" : ["select", "count"]}, {"name" : "task", "operations" : ["select", "count"]}], "comment" : "Usado pela interface Panel do Barramento"},
+              {"id" : "0c33cc7a-67bc-4c79-adfe", "drivers" : [{"name" : "fs", "operations" : ["read"]}]},
+              {"id" : "0c33cc7a-67bc-4c79-adfe", "drivers" : [{"name" : "task", "operations" : ["select", "next", "testinsert"]}, {"name" : "clima", "operations" : ["select", "count", "testinsert"]}]},
+              {"id" : "216efdba-1416-42d5-8790", "drivers" : [{"name" : "task", "operations" : ["select", "next", "testinsert", "drop"]},
+                                                                            {"name" : "clima", "operations" : ["select", "count", "testinsert"]},
+                                                                            {"name" : "fs", "operations" : ["read", "write", "find", "list"]}]}]
+}
+
+
+
