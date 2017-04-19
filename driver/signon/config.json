@@ -1,0 +1,3 @@
+{
+  "mongo" : {"ip" : "127.0.0.1", "config" : [ { "name" : "fatec" , "db" : "signon", "cols" : ["email","registro"] } ]}
+}

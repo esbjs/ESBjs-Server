@@ -16,7 +16,7 @@ exports.Execute = function (envelope, req, res) {
             });
 
         } catch (e) {
-            console.error(e)
+            res.end(JSON.stringify({"status": false, "data": ""}));
         }
     }
     else if (envelope.operation == 'list') {
@@ -38,7 +38,6 @@ exports.Execute = function (envelope, req, res) {
         } catch (e) {
             console.error(e)
         }
-        ;
         res.end(JSON.stringify(retorno));
     }
 

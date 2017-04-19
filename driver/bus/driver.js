@@ -36,7 +36,6 @@ exports.Execute = function (envelopeLog, req, res) {
         }
 
         if (envelopeLog.operation != undefined && envelopeLog.operation == 'insertlog') {
-            //console.log('dentro do insert')
             contador_execucoes += 1;
             var collection = "log_";
             if (envelopeLog.collection != undefined) {

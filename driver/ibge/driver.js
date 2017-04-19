@@ -4,16 +4,31 @@ var utilitario = require(path.join(__dirname , '..', '..', 'api', "utilitario.js
 
 exports.Execute = function(envelope, req, res){
     if (envelope.operation == 'select') {
+        if(envelope.sort == undefined){
+            envelope.sort = 'localidade.cidade';
+        }
 
-        mongo.ConsultarAsync(envelope.table, envelope.key, undefined, envelope, function (resultadojs) {
-            try {
-                //console.log(resultadojs);
-                res.end(JSON.stringify(resultadojs));
-            }
-            catch (e) {
-                console.error(e.stack);
-            }
-        });
+
+        if(envelope.fields == undefined) {
+            mongo.ConsultarAsync(envelope.table, envelope.key, envelope.sort, envelope, function (resultadojs) {
+                try {
+                    res.end(JSON.stringify(resultadojs));
+                }
+                catch (e) {
+                    console.error(e.stack);
+                }
+            });
+        }
+        else{
+            mongo.ConsultarAsyncV2(envelope.table, envelope.key, envelope.sort,envelope.fields, envelope, function (resultadojs) {
+                try {
+                    res.end(JSON.stringify(resultadojs));
+                }
+                catch (e) {
+                    console.error(e.stack);
+                }
+            });
+        }
     }
 
     if (envelope.operation == 'count') {

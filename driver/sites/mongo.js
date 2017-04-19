@@ -5,17 +5,8 @@ var mongog = require(path.join(__dirname, "..", "..", "api", "mongog.js"));
 var mongoose = new Mongoose();
 
 var CONFIG = JSON.parse(fs.readFileSync(path.join(__dirname, 'config.json')))
-var stringConexao = 'mongodb://'+ CONFIG.mongo.ip +'/clima';
+var stringConexao = 'mongodb://'+ CONFIG.mongo.ip +'/' + CONFIG.mongo.db;
 mongoose.connect(stringConexao);
-
-//var mongoose = require('mongoose');
-
-//var db = mongoose.connection;
-//mongoose.connect(stringConexao);
-//db.once('error', console.error);
-//db.once('open', function () {
-//    console.log('Conectado com mongodb:', stringConexao);
-//});
 
 // ---------------------------------- SCHEMAS ----------------------
 var Schema = mongoose.Schema;
@@ -58,45 +49,6 @@ exports.Count = function (schema, consulta, params, callback) {
     })
 }
 
-
-
-exports.ConsultarArrayAsync = function (schema, consultas, pos, retornar, req, res, callback) {
-    if(pos < consultas.length){
-        //console.log('invocando eu');
-        var eu = require('./mongoose.js');
-        //console.log('ok, consegu..., vou usar a achave:', consultas[pos])
-        var generico = Esquema(schema);
-        generico.find(consultas[pos], function (err, docs) {
-            //console.log(docs);
-            pos = pos + 1;
-            retornar.push(docs);
-            eu.ConsultarArrayAsync(schema, consultas, pos, retornar, req, res, callback);
-        });
-    }
-    else
-    {
-        callback(req, res, consultas, retornar );
-    }
-}
-
-
-exports.CountArrayAsync = function (schema, consultas, pos, retornar, req, res, callback) {
-    if(pos < consultas.length){
-        //console.log('invocando eu');
-        var eu = require('./mongoose.js');
-        //console.log('ok, consegu..., vou usar a achave:', consultas[pos])
-        var generico = Esquema(schema);
-        generico.count(consultas[pos], function (err, count) {
-            pos = pos + 1;
-            retornar.push(count);
-            eu.CountArrayAsync(schema, consultas, pos, retornar, req, res, callback);
-        });
-    }
-    else
-    {
-        callback(req, res, consultas, retornar );
-    }
-}
 
 exports.UpdateAsync = function (schema, chave, data, parametros, callback) {
     try{

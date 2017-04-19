@@ -83,3 +83,34 @@ function formataCasas(numero, casas) {
 
 }
 
+exports.FormataObjeto = function(js){
+    if(js == null || js == undefined){
+        return js;
+    }
+
+    FormataObjetoRecursivo(js);
+    return js;
+}
+
+function FormataObjetoRecursivo(js){
+    if(Array.isArray(js)){
+        console.error(typeof(js));
+        js.forEach(function(item){
+            FormataObjetoRecursivo(item);
+        });
+        return;
+    }
+    for(var key in js){
+        if(key.indexOf('[]') > 0){
+            console.log(js[key]);
+            if(Array.isArray(js[key])) {
+                js[key.substring(0, key.length - 2)] = js[key];
+            }
+            else{
+                js[key.substring(0, key.length - 2)] = [ js[key] ];
+            }
+
+            delete js[key];
+        }
+    }
+}

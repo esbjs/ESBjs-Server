@@ -47,29 +47,14 @@ exports.ConsultarAsync = function (schema, consulta, sort, params, callback) {
     }catch(e){
         console.error(e.stack);
     }
-    /*var generico = Esquema(schema);
-    var limit = 99999;
-    if(params.limit != ""){
-        limit = parseInt(params.limit);
-        //console.error('Novo limite:', limit);
+}
+
+exports.ConsultarAsyncV2 = function (schema, consulta, sort, fields, params, callback) {
+    try {
+        mongog.ConsultarAsyncV2(Esquema(schema), consulta, sort, fields, params, callback);
+    }catch(e){
+        console.error(e.stack);
     }
-    if(sort == undefined) {
-        generico.find(consulta).limit(limit).exec(function (err, docs) {
-            try{
-                callback(docs);
-            }
-            catch(e)
-            {
-                console.error(e.stack);
-            }
-        });
-    }
-    else
-    {
-        generico.find(consulta).sort(sort).exec(function (err, docs) {
-            callback(docs);
-        });
-    }*/
 }
 
 exports.Count = function (schema, consulta, params, callback) {

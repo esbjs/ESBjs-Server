@@ -9,7 +9,7 @@ rm /tmp/esbjs/fatec
 rm /tmp/esbjs/data/config.json
 cp /tmp/esbjs/data/config_template.json /tmp/esbjs/data/config.json
 
-cp /tmp/esbjs/* /web/esbjs_distro/service/
+cp -R /tmp/esbjs/* /web/esbjs_distro/service/
 
 #open /web/esbjs_distro/service
 

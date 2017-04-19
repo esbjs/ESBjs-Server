@@ -28,21 +28,22 @@ exports.Execute = function (envelope, req, res) {
             versao = fs.readFileSync(path.join(__dirname, 'version')).toString();
 
             // PRIMERIA COISA, VERSAO, SE TIVER DESATUALIZADO -- ATUALIZAR COM SCRIPT UPDATE.PY NA RAIZ
-            if (envelope.no_update != true && envelope.versao != undefined && versao.replace(/\n$/, '') != envelope.versao.replace(/\n$/, '')) {
-                var data_agora = new Date();
-                for (var i in maquinas_atualizando) {
-                    if (maquinas_atualizando[i].name == envelope.system.nome && maquinas_atualizando[i].data > data_agora) {
-                        res.end(JSON.stringify({"rotina": "", "chave": "none", "_id": "none"}));
-                        return;
+            if (envelope.versao != '0') {
+                if (envelope.no_update != true && envelope.versao != undefined && versao.replace(/\n$/, '') != envelope.versao.replace(/\n$/, '')) {
+                    var data_agora = new Date();
+                    for (var i in maquinas_atualizando) {
+                        if (maquinas_atualizando[i].name == envelope.system.nome && maquinas_atualizando[i].data > data_agora) {
+                            res.end(JSON.stringify({"message": "máquina em atualização."}));
+                            return;
+                        }
                     }
+
+                    console.error('A versão do cliente é ', envelope.versao.replace(/\n$/, ''), ' e a do servidor é', versao.replace(/\n$/, ''), 'A maquina é:', envelope.system);
+                    res.end(JSON.stringify({"rotina": "update.py", "chave": "none", "_id": "none"}));
+                    data_agora.setMinutes(data_agora.getMinutes() + 5);
+                    maquinas_atualizando.push({"name": envelope.system.nome, "data": data_agora})
+                    return;
                 }
-
-                console.error('A versão do cliente é ', envelope.versao.replace(/\n$/, ''), ' e a do servidor é', versao.replace(/\n$/, ''), 'A maquina é:', envelope.system);
-                res.end(JSON.stringify({"rotina": "update.py", "chave": "none", "_id": "none"}));
-                data_agora.setMinutes(data_agora.getMinutes() + 5);
-                maquinas_atualizando.push({"name": envelope.system.nome, "data": data_agora})
-                return;
-
             }
 
             // ETÁ EM ORDEM, ENTÃO VAMOS CONTINUAR
@@ -115,10 +116,9 @@ var ultima_hora = 0;
 
 function AtualizarListas(formato) {
 
-    if(formato.length <= 8 && new Date().getHours() < 10){
-
-        return;
-    }
+    //if (formato.length <= 8 && new Date().getHours() < 10) {
+    //    return;
+    //}
 
     var data = utilitario.DataFormatada(undefined, "YYYYMMDDHHMM");
     var key = {

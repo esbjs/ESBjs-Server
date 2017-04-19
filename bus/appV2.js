@@ -1,17 +1,27 @@
 /**
  * Created by wellington on 15/03/16.
  */
+var path = require('path');
 var async = require("async");
 var express = require('express');
 var bodyParser = require('body-parser')
 var fs = require("fs");
 var http = require('http');
-var path = require('path');
+var https = require('https');
+
+var nodemailer = require('nodemailer');
+
+var privateKey  = fs.readFileSync(path.join(__dirname,'..', 'sslcert','key.pem'), 'utf8');
+var certificate = fs.readFileSync(path.join(__dirname,'..','sslcert','server.crt'), 'utf8');
+
+var credentials = {key: privateKey, cert: certificate};
+
 var utilitario = require(path.join(__dirname, '..', 'api', 'utilitario.js'));
 var request = require('request');
 
 var CONFIG = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'data', 'config.json')))
 var PORTA = CONFIG.server.http.port;
+var PORTAS = CONFIG.server.https.port;
 console.log(CONFIG)
 
 domain = require('domain'),
@@ -25,6 +35,7 @@ d.on('error', function (err) {
 // APLICATIVO
 var app = express();
 app.set('port', process.env.PORT || PORTA);
+app.set('ports', process.env.PORTS || PORTAS);
 
 // parse application/json
 app.use(bodyParser.json({limit: '50mb'}));
@@ -77,7 +88,7 @@ app.post('/request', processar);
 
 function processar(req, res){
     //console.log(typeof(req.body))
-    //console.error(req.body);
+    console.error(req.body);
     try {
         total_requisicoes = total_requisicoes + 1;
         //console.log('chamado.')
@@ -176,7 +187,7 @@ function processar(req, res){
         }
     }
     catch (e) {
-        //console.error(e)
+        console.error(e)
         NotificarErro(envelope, req, res, e.stack);
     }
 }
@@ -236,14 +247,20 @@ app.get('/reload', function (req, res) {
 
 
 
+//var httpServer = http.createServer(app);
+//var httpsServer = https.createServer(credentials, app);
+//httpServer.listen(8080);
+//httpsServer.listen(8443);
 
 
-var server = http.createServer(app);
-console.error('Iniciando Serviço.')
-server.listen(app.get('port'), function () {
-    console.log('Express server listening on port ' + app.get('port'));
+var serverhttp = http.createServer(app);
+serverhttp.listen(app.get('port'), function () {
+    console.log('Express server listening on port (HTTP) ' + app.get('port'));
 });
-
+var serverhttps = https.createServer(credentials, app);
+serverhttps.listen(app.get('ports'), function () {
+    console.log('Express server listening on port (HTTPS) ' + app.get('ports'));
+});
 
 // ----------------------------------------------------CODIGO DE ATUALIZAÇÃO ---------------------------
 function reloadApp(event, filename) {

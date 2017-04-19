@@ -69,6 +69,17 @@ exports.Execute = function (envelope, req, res) {
                 console.error(e.stack);
             }
         }
+
+        if (envelope.operation == 'remove') {
+            try {
+                mongo.Remove(envelope.table, envelope.key, {}, function (retornar) {
+                    res.end(JSON.stringify(retornar));
+                    //console.log(retornar);
+                });
+            } catch (e) {
+                console.error(e.stack);
+            }
+        }
     }
     catch (e) {
         console.error(e.stack);
