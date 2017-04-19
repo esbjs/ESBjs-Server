@@ -271,6 +271,10 @@ app.get('/ping', function (req, res) {
     }
 });
 
+app.get('/reload', function (req, res) {
+    process.exit(0);
+});
+
 
 var server = http.createServer(app);
 console.error('Iniciando Serviço.')
@@ -287,7 +291,7 @@ function reloadApp(event, filename) {
             fs.writeFileSync('/tmp/' + utilitario.DataFormatada(undefined, "FULL"),
                 JSON.stringify(event) + JSON.stringify(filename));
 
-            process.exit(0);
+            //process.exit(0);
         }, 60 * 1000);
         console.log('Agendar para daqui a 60 segundos. Arquivo:')
     }
