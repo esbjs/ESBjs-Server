@@ -1,13 +1,52 @@
 {
-  "server" : {"name" : "fatec", "type" : "servicebus", "ip" : "127.0.0.1", "http" :{ "port" : 5007}, "https" :{ "port" : 5006}},
-  "others" : [{"name" : "home", "type" : "servicebus", "ip" : "192.168.1.170", "port" : 5007},
-    {"name" : "home", "type" : "servicebus", "ip" : "192.168.1.171", "port" : 5007}],
-  "balance" : {"port" : 5007},
-  "tokens" : [{"id" : "0c33cc7a-69bc-4c79-adfe-a", "drivers" : [{"name" : "clima", "operations" : ["select", "count"]}, {"name" : "bus", "operations" : ["select", "count"]}, {"name" : "task", "operations" : ["select", "count"]}], "comment" : "Usado pela interface Panel do Barramento"},
-    {"id" : "0c33cc7a-67bc-4c79-adfe-a", "drivers" : [{"name" : "fs", "operations" : ["read"]}]},
-    {"id" : "0c33cc7a-67bc-4c79-adfe-a", "drivers" : [{"name" : "task", "operations" : ["select", "next", "testinsert"]}, {"name" : "clima", "operations" : ["select", "count", "testinsert"]}]},
-    {"id" : "216efdba-1416-42d5-8790-a", "drivers" : [{"name" : "task", "operations" : ["select", "next", "testinsert", "drop"]},
-      {"name" : "bus", "operations" : [ "drop"]},
-      {"name" : "clima", "operations" : ["remove", "select", "count", "testinsert"]},
-      {"name" : "fs", "operations" : ["read", "write"]}]}]
+  "server": {
+    "name": "home",
+    "element" : "desenv",
+    "type": "servicebus",
+    "ip": "127.0.0.1",
+    "http": {
+      "port": 5007
+    },
+    "https": {
+      "port": 5008
+    }
+  },
+  "others": [
+    {
+      "name": "home",
+      "element" : "producao",
+      "type": "servicebus",
+      "ip": "127.0.0.1",
+      "http": {
+        "port": 5007
+      },
+      "https": {
+        "port": 5009
+      }
+    }
+  ],
+  "balance": {
+    "tokenId" : "aa7637f-dddd-dddd-88b5-da8513bbbb19c",
+    "http": {
+      "port": 5007
+    },
+    "https": {
+      "port": 5008
+    }
+  },
+  "tokens": [
+    {
+      "id": "aaaaaaa-bbbbbb-eeeee-ddddd-ddddddd",
+      "drivers": [
+        {
+          "name": "esbdb",
+          "operations": [
+            "store", "load", "list"
+          ]
+        }
+      ],
+      "comment": "Teste storage"
+    }
+  ]
 }
+

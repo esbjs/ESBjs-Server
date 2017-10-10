@@ -1,6 +1,7 @@
 {
   "repositorios" : [
-    {"name" : "clima", "path" : "/tmp/clima/"}
+    {"name" : "clima", "path" : "/tmp/clima/"},
+    {"name" : "plagiarism", "path" : "/tmp/plagiarism/"}
 
   ]
 }

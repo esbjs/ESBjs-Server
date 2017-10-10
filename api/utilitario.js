@@ -1,5 +1,5 @@
 var fs = require('fs');
-
+var path = require('path');
 exports.GetDirectory = function(currentpath){
     const fs = require('fs')
     const path = require('path')
@@ -9,6 +9,17 @@ exports.GetDirectory = function(currentpath){
         console.log(files[i]);
     }
     return files;
+}
+
+exports.CreateDirecotry = function(pathfile){
+    var buffer_path_array = pathfile.split('/');
+    var buffer_path_string = '/';
+    for(var i = 0; i < buffer_path_array.length - 1; i++){
+        var buffer_path_string = path.join(buffer_path_string, buffer_path_array[i] );
+        if(!fs.existsSync(buffer_path_string)){
+            fs.mkdirSync(buffer_path_string);
+        }
+    }
 }
 
 exports.KeyFile = function(str){
@@ -36,6 +47,9 @@ exports.DataFormatada = function(data, formato) {
     }
     if (formato == 'YYYYMMDDHH') {
         return data.getFullYear() + formataCasas(data.getMonth() + 1, 2) + formataCasas(data.getDate(), 2) + formataCasas(data.getHours(), 2);
+    }
+    if (formato == 'YYYY_MM_DD_HH') {
+        return data.getFullYear() + "_" + formataCasas(data.getMonth() + 1, 2) + "_" + formataCasas(data.getDate(), 2) + "_" + formataCasas(data.getHours(), 2);
     }
     if (formato == 'YYYYMMDDHHMM') {
         return data.getFullYear() + formataCasas(data.getMonth() + 1, 2) + formataCasas(data.getDate(), 2)
@@ -92,9 +106,10 @@ exports.FormataObjeto = function(js){
     return js;
 }
 
+// TODO: Isso aqui está reduzindo o desempenho do ambiente, procurar solução melhor.
 function FormataObjetoRecursivo(js){
     if(Array.isArray(js)){
-        console.error(typeof(js));
+        //console.error(typeof(js));
         js.forEach(function(item){
             FormataObjetoRecursivo(item);
         });
@@ -102,7 +117,7 @@ function FormataObjetoRecursivo(js){
     }
     for(var key in js){
         if(key.indexOf('[]') > 0){
-            console.log(js[key]);
+
             if(Array.isArray(js[key])) {
                 js[key.substring(0, key.length - 2)] = js[key];
             }
@@ -113,4 +128,34 @@ function FormataObjetoRecursivo(js){
             delete js[key];
         }
     }
+}
+
+exports.TabletoJson = function(texto, fields){
+    var regexrow = /<tr>(.*?)<\/tr>/gim
+    var regexcelula = /<(th|td)(.*?)>(.*?)<(\/th|\/td)>/gim
+    var regexNo = /\W/igm
+    var regexTexto = /<(.*?)>/igm
+
+    var rows = texto.match(regexrow);
+    var retornar = {};
+    retornar.rows = [];
+
+    for(var i = 0; i < rows.length; i++){
+        var buffer = {}
+        var celulas = rows[i].match(regexcelula);
+        if(fields == undefined && i == 0){
+            fields = [];
+            for(var j = 0; j < celulas.length; j++) {
+                fields.push( celulas[j].replace(regexTexto, '').trim().replace(regexNo, '').toLowerCase());
+            }
+            continue;
+        }
+
+        for(var j = 0; j < celulas.length; j++) {
+            buffer[fields[j]] = celulas[j].replace(regexTexto, '').replace('&nbsp;', '');
+        }
+
+        retornar.rows.push(buffer);
+    }
+    return retornar;
 }
