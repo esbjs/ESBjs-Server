@@ -1,7 +1,0 @@
-{
-  "type" : "div", "attr" : [
-  {"attr" : "id", "value" : "forgot"},
-  {"attr" : "name", "value" : "forgot"}
-], "load" : true
-
-}

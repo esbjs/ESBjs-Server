@@ -1,3 +1,4 @@
+/*
 var Mongoose = require('mongoose').Mongoose;
 var fs = require('fs');
 var path = require('path');
@@ -39,7 +40,7 @@ exports.ConsultarAsync = function (schema, consulta, sort, params, callback) {
     }catch(e){
         console.error(e.stack);
     }
-    /*var generico = Esquema(schema);
+    /!*var generico = Esquema(schema);
     var limit = 99999;
     if(params.limit != ""){
         limit = parseInt(params.limit);
@@ -63,7 +64,7 @@ exports.ConsultarAsync = function (schema, consulta, sort, params, callback) {
         generico.find(consulta).sort(sort).exec(function (err, docs) {
             callback(docs);
         });
-    }*/
+    }*!/
 }
 
 
@@ -88,7 +89,7 @@ exports.ConsultarArrayAsync = function (schema, consultas, pos, retornar, req, r
 
 exports.DropCollection = function (collection, callback) {
     try {
-        console.log('Aqui dentro, excluir a collection:', collection)
+        //console.log('Aqui dentro, excluir a collection:', collection)
         mongoose.connection.db.dropCollection(collection, function(err, result) {
             callback(result);
         });
@@ -125,19 +126,6 @@ exports.UpdateAsync = function (schema, chave, data, parametros, callback) {
     catch (ex) {
         console.log(ex.stack);
     }
-    /*try {
-        var generico = Esquema(schema);
-        generico.update(chave, data, {upsert: true}, function (err, doc) {
-            if (err) {
-                console.log(err);
-                return;
-            };
-            callback(doc );
-        });
-    }
-    catch (ex) {
-        console.log(ex.stack);
-    }*/
 }
 
 exports.Count = function (schema, consulta, params, callback) {
@@ -148,16 +136,11 @@ exports.Count = function (schema, consulta, params, callback) {
     })
 }
 
-exports.DropCollection = function (collection, callback) {
+exports.Drop = function (schema, callback) {
     try {
-        mongoose.connection.db.dropCollection(collection, function(err, result) {
-            callback(result);
-        });
-
-
-    }
-    catch (ex) {
-        callback(ex.stack);
+        mongog.Drop(Esquema(schema), schema, callback);
+    }catch(e){
+        console.error(e.stack);
     }
 }
 
@@ -167,4 +150,4 @@ function Esquema(schema) {
         genericModel[schema] = mongoose.model(schema, genericSchema);
     }
     return genericModel[schema];
-}
+}*/
